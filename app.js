@@ -4,9 +4,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
-//Middleware
+// Middleware
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: false}));
+
+// Database Setup
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/morello', {useMongoClient: true});
+const db = mongoose.connection;
+
+db.on('error', (err) => {
+  console.error('DB connection error:', err);
+});
 
 
 // Routes
@@ -15,8 +23,21 @@ app.use('/items', itemRoutes);
 
 
 
-app.get('/', (req, res, next) => {
-  res.json({color: 'blue', isAwesome: true});
+// catch 404 and forward to error handler
+app.use((req,res, next) => {
+  const error = new Error('Route not found');
+  error.status = 404;
+  next(error);
+});
+
+// Error handler
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.json({
+    error: {
+      message: error.message
+    }
+  });
 });
 
 // Port Setup
