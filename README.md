@@ -17,10 +17,17 @@ update existing items
 delete items
 /item/:id
 
+
+
+
+
 User
 ----------------
 create User
+/user
+
 get user info
+/user/id
+
 update user info
-get shopping cart
-update shopping cart
+/user/id
