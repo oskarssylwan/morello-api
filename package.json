@@ -1,0 +1,18 @@
+{
+  "name": "morello-backend",
+  "version": "1.0.0",
+  "description": "REST API for eCommerce project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Oskars Sylwan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
