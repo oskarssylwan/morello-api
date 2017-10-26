@@ -19,7 +19,9 @@ db.on('error', (err) => {
 
 // Routes
 const itemRoutes = require('./routes/items');
+const userRoutes = require('./routes/users');
 app.use('/items', itemRoutes);
+app.use('/user', userRoutes);
 
 
 
