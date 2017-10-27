@@ -28,19 +28,24 @@ const UserSchema = new mongoose.Schema({
   cart: {
     type: [{}],
     default: [{}]
+  },
+  created_at: {
+    type: Date,
+    required: true,
+    default: Date.now
   }
 });
 
 //Static Methods
-UserSchema.statics.authenticate = function(email, password, callback) {
-  User.findOne({ email: email})
+UserSchema.statics.authenticate = function(id, password, callback) {
+  User.findOne({ $or: [{username: id}, {email: id}]})
       .exec(function (error, user) {
         if(error) {
           return callback(error);
         } else if (!user) {
           const err = new Error('User not found');
-          error.status = 401;
-          return callback(error);
+          err.status = 401;
+          return callback(err);
         }
         bcrypt.compare(password, user.password, function(error, result) {
           if (result === true) {

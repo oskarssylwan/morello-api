@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const middleware = require('../middleware');
 const router = express.Router();
 
 // DB Models
@@ -33,31 +34,46 @@ router.get('/:itemID', (req, res, next) => {
 });
 
 // Post Routes
-router.post('/', (req, res, next) => {
-  //Create DB entry for item
-  const item = new Item(req.body);
-  item.save((error, itemEntry) => {
-    if (error) next(error);
-    res.json({message: 'Item created successfully!', item: item});
-  })
+router.post('/', middleware.protected, (req, res, next) => {
+  if (req.token_decoded.user_group === 'admin') {
+    //Create DB entry for item
+    const item = new Item(req.body);
+    item.save((error, itemEntry) => {
+      if (error) next(error);
+      res.json({message: 'Item created successfully!', item: item});
+    })
+  } else {
+    const err = new Error('Access denied');
+    return next(err);
+  }
 });
 
 //Put Routes
-router.put('/:itemID', (req, res, next) => {
-  req.item.set(req.body);
-  req.item.save((error, item) => {
-    if (error) return next(error);
+router.put('/:itemID', middleware.protected, (req, res, next) => {
+  if (req.token_decoded.user_group === 'admin') {
+    req.item.set(req.body);
+    req.item.save((error, item) => {
+      if (error) return next(error);
 
-    res.json({message: 'Item updated successfully!', item: item});
-  });
+      res.json({message: 'Item updated successfully!', item: item});
+    });
+  } else {
+    const err = new Error('Access denied');
+    return next(err);
+  }
 });
 
 // delete routes
-router.delete('/:itemID', (req, res, next) => {
-  req.item.remove(error => {
-    if (error) return next(error);
-    res.json({message: "Item removed"});
-  })
+router.delete('/:itemID', middleware.protected, (req, res, next) => {
+  if (req.token_decoded.user_group === 'admin') {
+    req.item.remove(error => {
+      if (error) return next(error);
+      res.json({message: "Item removed"});
+    })
+  } else {
+    const err = new Error('Access denied');
+    return next(err);
+  }
 });
 
 

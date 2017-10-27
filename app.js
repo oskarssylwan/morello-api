@@ -2,10 +2,13 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const webToken = require('jsonwebtoken');
+const morgan = require('morgan');
 const app = express();
 
 // Middleware
 app.use(bodyParser.json());
+app.use(morgan('dev'));
 
 // Database Setup
 const mongoose = require('mongoose');
