@@ -23,8 +23,10 @@ db.on('error', (err) => {
 // Routes
 const itemRoutes = require('./routes/items');
 const userRoutes = require('./routes/users');
+const storeRoutes = require('./routes/store');
 app.use('/items', itemRoutes);
 app.use('/user', userRoutes);
+app.use('/store', storeRoutes);
 
 
 
@@ -39,9 +41,8 @@ app.use((req,res, next) => {
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
-    error: {
-      message: error.message
-    }
+    success: false,
+    message: error.message
   });
 });
 

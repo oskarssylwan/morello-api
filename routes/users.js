@@ -46,6 +46,7 @@ router.post('/authenticate', (req, res, next) => {
     if(error) return next(error);
     const payload = {
       username: user.username,
+      user_id: user._id,
       user_group: user.user_group
     };
 
