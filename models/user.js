@@ -41,7 +41,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.statics.authenticate = function(id, password, callback) {
   User.findOne({ $or: [{username: id}, {email: id}]})
       .exec(function (error, user) {
-        console.log(user);
         if(error) {
           return callback(error);
         } else if (!user) {
@@ -53,7 +52,7 @@ UserSchema.statics.authenticate = function(id, password, callback) {
             if (result === true) {
               return callback(null, user);
             } else {
-              return callback();
+              return callback(error);
             }
           });
         }

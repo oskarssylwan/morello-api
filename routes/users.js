@@ -1,96 +1,21 @@
 'use strict';
 
+// Imports
 const express = require('express');
 const middleware = require('../middleware');
-const config = require('../config');
 const router = express.Router();
-const webToken = require('jsonwebtoken');
+const controller = require('../controllers/users');
 
-// DB Models
-const User = require('../models/user');
+
 
 // Middleware
-router.param('username', (req, res, next, username) => {
-  User.findOne({username: username},  {password: 0, __v: 0}, (error, user) => {
-    if (error) return next(error);
-    if (!user) return next(new Error('User could not be found'));
-    req.user = user;
-    return next();
-  });
-});
+router.param('username', controller.findUser);
 
-// GET Routes
-router.get('/:username', (req, res, next) => {
-  res.json({message: 'User retrieved successfully!', user: req.user});
-});
-
-// POST Routes - Create User
-router.post('/', (req, res, next) => {
-  req.body.user_group = 'user';
-  const user = new User(req.body);
-  user.save((error, savedUser) => {
-    if (error) return next(error);
-    res.json({
-      message: 'User created successfully!',
-      user: {
-        email: savedUser.email,
-        username: savedUser.username,
-        user_group: savedUser.user_group
-      }
-    });
-  });
-});
-
-router.post('/authenticate', (req, res, next) => {
-  const userID = req.body.email || req.body.username;
-  User.authenticate(userID, req.body.password, (error, user) => {
-    if(error) {
-      return next(error);
-    } else {
-      const payload = {
-        username: user.username,
-        user_id: user._id,
-        user_group: user.user_group
-      };
-
-      const token = webToken.sign(payload, config.token_secret, {
-        expiresIn: config.token_expire_time
-      });
-
-      res.json({
-        message: "Authentication successfull!",
-        token: token
-      });
-    }
-
-
-  })
-});
-
-
-
-// PUT Routes
-router.put('/:username', middleware.protected, (req, res, next) => {
-  if (req.token_decoded.username === req.user.username) {
-    req.user.set(req.body);
-    req.user.save((error, user) => {
-      if (error) return next(error);
-
-      res.json({
-        message: 'Item updated successfully!',
-        user: {
-          email: user.email,
-          username: user.username,
-          user_group: user.user_group,
-          cart: user.cart
-        }
-      });
-    });
-  } else {
-    const err = new Error('Access denied');
-    return next(err);
-  }
-});
+// Routes
+router.get('/:username', controller.getUser);
+router.post('/', controller.createUser);
+router.post('/authenticate', controller.authenticateUser);
+router.put('/:username', middleware.protected, controller.updateUser);
 
 // Exports
 module.exports = router;
