@@ -2,6 +2,7 @@
 
 const express = require('express');
 const middleware = require('../middleware');
+const controller = require('../controllers/items');
 const router = express.Router();
 
 // DB Models
@@ -19,34 +20,14 @@ router.param('itemID', (req, res, next, id) => {
 
 
 // Get Routes
-router.get('/', (req, res, next) => {
-  if (!req.query.categories) return next(new Error('No category specified'));
-  Item.find({ categories: { $all: req.query.categories.split(',')}}, (error, items) => {
-      if (error) return next(error);
-      if (items.length <= 0) return next(new Error('No items found'));
-      res.json(items);
-    }
-   );
-});
+router.get('/', controller.getItems);
 
 router.get('/:itemID', (req, res, next) => {
   res.json({message: 'Item retrieved successfully!', item: req.item})
 });
 
 // Post Routes
-router.post('/', middleware.protected, (req, res, next) => {
-  if (req.token_decoded.user_group === 'admin') {
-    //Create DB entry for item
-    const item = new Item(req.body);
-    item.save((error, itemEntry) => {
-      if (error) next(error);
-      res.json({message: 'Item created successfully!', item: item});
-    })
-  } else {
-    const err = new Error('Access denied');
-    return next(err);
-  }
-});
+router.post('/', middleware.protected, controller.createItem);
 
 //Put Routes
 router.put('/:itemID', middleware.protected, (req, res, next) => {

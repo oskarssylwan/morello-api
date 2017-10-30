@@ -20,6 +20,7 @@ db.on('error', (err) => {
   console.error('DB connection error:', err);
 });
 
+mongoose.Promise = global.Promise;
 
 // Routes
 const itemRoutes = require('./routes/items');

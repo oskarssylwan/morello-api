@@ -44,21 +44,25 @@ router.post('/', (req, res, next) => {
 router.post('/authenticate', (req, res, next) => {
   const userID = req.body.email || req.body.username;
   User.authenticate(userID, req.body.password, (error, user) => {
-    if(error) return next(error);
-    const payload = {
-      username: user.username,
-      user_id: user._id,
-      user_group: user.user_group
-    };
+    if(error) {
+      return next(error);
+    } else {
+      const payload = {
+        username: user.username,
+        user_id: user._id,
+        user_group: user.user_group
+      };
 
-    const token = webToken.sign(payload, config.token_secret, {
-      expiresIn: config.token_expire_time
-    });
+      const token = webToken.sign(payload, config.token_secret, {
+        expiresIn: config.token_expire_time
+      });
 
-    res.json({
-      message: "Authentication successfull!",
-      token: token
-    });
+      res.json({
+        message: "Authentication successfull!",
+        token: token
+      });
+    }
+
 
   })
 });
