@@ -2,6 +2,7 @@
 
 const express = require('express');
 const middleware = require('../middleware');
+const config = require('../config');
 const router = express.Router();
 const webToken = require('jsonwebtoken');
 
@@ -50,8 +51,8 @@ router.post('/authenticate', (req, res, next) => {
       user_group: user.user_group
     };
 
-    const token = webToken.sign(payload, 'morello', {
-      expiresIn: "1 day" // 24 hours
+    const token = webToken.sign(payload, config.token_secret, {
+      expiresIn: config.token_expire_time
     });
 
     res.json({

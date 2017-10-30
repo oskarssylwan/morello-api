@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const config = require('../config.js');
 
 // Schemas
 const UserSchema = new mongoose.Schema({
@@ -61,11 +62,10 @@ UserSchema.statics.authenticate = function(id, password, callback) {
 UserSchema.pre('save', function(next) {
   let user = this;
   if(user.password) {
-    bcrypt.hash(user.password, 10, function(error, hashed) {
+    bcrypt.hash(user.password, config.hash_rounds, function(error, hashed) {
       if (error) {
         return next(error);
       } else {
-        console.log(hashed);
         user.password = hashed;
           next();
       }

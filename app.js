@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const config = require('./config.js');
 const bodyParser = require('body-parser');
 const webToken = require('jsonwebtoken');
 const morgan = require('morgan');
@@ -12,7 +13,7 @@ app.use(morgan('dev'));
 
 // Database Setup
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/morello', {useMongoClient: true});
+mongoose.connect(config.db_location, {useMongoClient: true});
 const db = mongoose.connection;
 
 db.on('error', (err) => {
@@ -31,7 +32,7 @@ app.use('/store', storeRoutes);
 
 
 // catch 404 and forward to error handler
-app.use((req,res, next) => {
+app.use((req, res, next) => {
   const error = new Error('Route not found');
   error.status = 404;
   next(error);
@@ -47,6 +48,6 @@ app.use((error, req, res, next) => {
 });
 
 // Port Setup
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+app.listen(config.port, () => {
+  console.log('Server running on port', config.port);
 })
