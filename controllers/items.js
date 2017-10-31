@@ -47,7 +47,11 @@ module.exports = {
       const item = new Item(req.body);
       item.save((error, itemEntry) => {
         if (error) next(error);
-        res.json({message: 'Item created successfully!', item: item});
+        res.json({
+          succes: true,
+          message: 'Item created successfully!',
+          item: item
+        });
       })
     } else {
       const err = new Error('Access denied');
@@ -61,7 +65,11 @@ module.exports = {
       req.item.save((error, item) => {
         if (error) return next(error);
 
-        res.json({message: 'Item updated successfully!', item: item});
+        res.json({
+          success: true
+          message: 'Item updated successfully!',
+          item: item
+        });
       });
     } else {
       const err = new Error('Access denied');
@@ -73,7 +81,10 @@ module.exports = {
     if (req.token_decoded.user_group === 'admin') {
       req.item.remove(error => {
         if (error) return next(error);
-        res.json({message: "Item removed"});
+        res.json({
+          success: true,
+          message: "Item removed"
+        });
       })
     } else {
       const err = new Error('Access denied');

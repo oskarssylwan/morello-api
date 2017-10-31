@@ -60,7 +60,7 @@ module.exports = {
 
         res.json({
           success: true,
-          message: 'Item updated successfully!',
+          message: 'User updated successfully!',
           user: {
             email: user.email,
             username: user.username,
