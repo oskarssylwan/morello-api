@@ -4,86 +4,319 @@ REST API for eCommerce clothing website.
 
 ## API Calls
 
+Request can be made with either forms or JSON objects. All properties are required
+unless otherwise specified. Responses come as JSON objects.
+
 ### Users
 
-#### Hello
+#### New user
 
-### Prerequisites
 
-What things you need to install the software and how to install them
+##### Route
+```
+POST /user
+```
+##### Example
+
+Request
+```
+{
+  username: 'Jane',
+  email:    'jane.doe@gmail.com',
+  password: 'secret123'
+}
 
 ```
-Give examples
+Response
 ```
 
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+{
+    success:  true,
+    message:  'User created successfully!',
+    user:     {
+            email: "jane.doe@gmail.com",
+            username: 'Jane',
+            user_group: 'user'
+          }
+}
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+#### Update user
+Any property sent alongside the requests will be updated
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
+##### Route
 ```
-Give an example
+PUT /user/:username
+```
+##### Example
+Request
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+{
+  email: 'jane96@new-mail.com',
+  token: 'xxxxx.xxxxx.xxxxx'
+}
 ```
-Give an example
+Response
+```
+{
+    success:  true,
+    message:  'User updated successfully!',
+    user:     {
+            email: "jane96@new-mail.com",
+            username: 'Jane',
+            user_group: 'user'
+          }
+}
 ```
 
-## Deployment
+#### Get user
 
-Add additional notes about how to deploy this on a live system
+##### Route
+```
+GET /user/:username
+```
+##### Example
 
-## Built With
+Response
+```
+{
+    success:  true,
+    message:  'User retrieved successfully!',
+    user:     {
+            _id: "xxxxxxxxx"
+            email: "jane96@new-mail.com",
+            username: 'Jane',
+            user_group: 'user',
+            created_at:  '2017-10-27T09:15:02.078Z',
+            cart: []
+          }
+}
+```
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+#### Authenticate user
+Users can be authenticated width either their username or email
 
-## Contributing
+##### Route
+```
+POST /user/authenticate
+```
+##### Example
+Request
+```
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+{
+  email:    'jane96@new-mail.com',
+  password: 'secret123'
+}
+```
+Response
+```
+{
+  success: true,
+  message: 'Authentication successfull!',
+  token:   'xxxxxx.xxxxxx.xxxxxx'
+}
+```
+### Items
 
-## Versioning
+#### Get items based on category
+Returns an array with items that matches ALL the specified categories. Categories are sent via a query string.
+##### Route
+```
+GET /items?categories=value1,value2,value3
+```
+##### Example
+Request
+```
+/items?categories=man,jacket
+```
+Response
+```
+[
+    {
+        _id: 'xxxxxxxxxx',
+        name: 'Jacky',
+        price: 47,
+        color: 'blue',
+        categories: [
+            'man',
+            'jacket'
+        ],
+        material: 'Jean',
+        origin: 'USA',
+        description: 'Lorem Ipsum Description'
+    },
+    {
+        _id: 'xxxxxxxxxx',
+        name: 'Jackie',
+        price: 29,
+        color: 'orange',
+        categories: [
+            'man',
+            'jacket'
+        ],
+        material: 'Cotton',
+        origin: 'USA',
+        description: 'Lorem Ipsum Description'
+    },
+]
+```
+#### Get specific item
+##### Route
+```
+GET /items/:itemID
+```
+##### Example
+Response
+```
+{
+    _id: 'xxxxxxxxxx',
+    name: 'Baggie Shaggie',
+    price: 15,
+    color: 'tomato',
+    categories: [
+        't-shirt',
+        'unisex'
+    ],
+    material: 'Cotton',
+    origin: 'USA',
+    description: 'Lorem Ipsum Description'
+}
+```
+#### Create item
+##### Route
+```
+POST /items
+```
+##### Example
+Request
+```
+{
+  name:        'Fancy Mikael',
+  price:        404,
+  color:       'transparent',
+  description: 'Very fancy pants',      //Optional: defaults to Lerom Ipsum text
+  material:    'silk',                  //Optional: defaults to Cotton
+  origin:      'USA'                    //Optional: defaults to USA
+  categories:  ['man', 'pants'],
+  token:       xxxxxx.xxxxxx.xxxxx
+}
+```
+Response
+```
+{
+  success: true,
+  message: 'item created successfully',
+  item: {item}
+}
+```
+#### Update item
+Any property sent alongside the requests will be updated
+##### Route
+```
+PUT /items/:itemID
+```
+##### Example
+Request
+```
+{
+  price: 42,
+  token: 'xxxxx.xxxxx.xxxxx'
+}
+```
+Response
+```
+{
+  success:    true,
+  message:    'Item updated successfully!',
+  item:       {item}
+}
+```
+#### Delete item
+##### Route
+```
+DELETE /items/:itemID
+```
+##### Example
+Response
+```
+{
+  success: true,
+  message: 'Item removed'
+}
+```
+### Store
+#### Get all orders
+##### Route
+```
+GET /store
+```
+##### Examples
+Response
+```
+{
+  success:  true,
+  message:  'Orders retrieved successfully',
+  orders:   [orders]
+}
+```
+#### Get order made by specific user
+##### Route
+```
+GET /store/:userID
+```
+##### Example
+Response
+```
+{
+  success:  true,
+  message:  'Orders retrieved successfully',
+  orders:   [orders]
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+}
+```
+#### New order
+##### Route
+```
+POST /store/checkout
+```
+##### Example
+Requests
+```
+{
+  token: xxxxx.xxxxx.xxxxx,
+  cart: [
+  {
+    item_id: 'aaaaa',
+    quantity: 2
+  },
+  {
+    item_id: 'bbbbb',
+    quantity: 1
+  }
+  ]
+}
+```
+Response
+```
+{
+    success: true,
+    message: 'Order recieved successfully',
+    order: {
+        made_by: 'Jane',
+        _id:     'xxxxxx',
+        date:    '2017-10-31T12:27:47.453Z',
+        items:  [
+              {
+                item_id: 'aaaaa',
+                quantity: 2
+              },
+              {
+                item_id: 'bbbbb',
+                quantity: 1
+              }
+          ]
+    }
+}
+```

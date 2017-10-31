@@ -66,7 +66,7 @@ module.exports = {
         if (error) return next(error);
 
         res.json({
-          success: true
+          success: true,
           message: 'Item updated successfully!',
           item: item
         });
