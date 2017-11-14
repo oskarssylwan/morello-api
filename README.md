@@ -7,6 +7,31 @@ REST API for eCommerce clothing website.
 Request can be made with either forms or JSON objects. All properties are required
 unless otherwise specified. Responses come as JSON objects.
 
+
+### Example request using fetch()
+```
+const headers = new Headers();
+headers.append("Content-Type", "application/json");
+
+fetch('API-URL/route', {
+  method: "POST",
+  headers: headers,
+  body: JSON.stringify({
+    username: this.state.username,
+    password: this.state.password
+  })
+})
+  .then(response => {
+    return response.json();
+  })
+  .then(json => {
+    // Do stuff with the response
+  })
+  .catch(err => {
+    // error handling
+  })
+```
+
 ### Users
 
 #### New user
