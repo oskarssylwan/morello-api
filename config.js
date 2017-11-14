@@ -1,6 +1,6 @@
 module.exports = {
   // Server setup
-  port: 3000,
+  port: 8080,
 
   //Databse setup
   db_location: 'mongodb://localhost:27017/morello',
