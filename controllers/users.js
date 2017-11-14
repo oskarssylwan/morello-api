@@ -78,6 +78,7 @@ module.exports = {
 
   authenticateUser: function(req, res, next) {
     const userID = req.body.email || req.body.username;
+    console.log(req.body);
     User.authenticate(userID, req.body.password, (error, user) => {
       if(error) {
         return next(error);

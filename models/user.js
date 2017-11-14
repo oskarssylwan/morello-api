@@ -51,7 +51,11 @@ UserSchema.statics.authenticate = function(id, password, callback) {
           bcrypt.compare(password, user.password, function(error, result) {
             if (result === true) {
               return callback(null, user);
+            } else if (!result){
+              const err = new Error('Credentials do not match');
+              return callback(err);
             } else {
+              console.log(result);
               return callback(error);
             }
           });
