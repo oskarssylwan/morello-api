@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express();
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '1000kb'}));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('dev'));
 app.use(cors());
