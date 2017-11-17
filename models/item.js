@@ -11,6 +11,7 @@ const ItemSchema = new mongoose.Schema({
   material: {type: String, default: 'Cotton'},
   color: String,
   categories: [String],
+  image: String
 });
 
 
