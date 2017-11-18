@@ -48,7 +48,7 @@ module.exports = {
       item.save((error, itemEntry) => {
         if (error) next(error);
         res.json({
-          succes: true,
+          success: true,
           message: 'Item created successfully!',
           item: item
         });
