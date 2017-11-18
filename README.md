@@ -196,18 +196,23 @@ GET /items/:itemID
 Response
 ```
 {
-    _id: 'xxxxxxxxxx',
-    name: 'Baggie Shaggie',
-    price: 15,
-    color: 'tomato',
-    categories: [
-        't-shirt',
-        'unisex'
-    ],
-    material: 'Cotton',
-    origin: 'USA',
-    description: 'Lorem Ipsum Description'
+  success: true,
+  message: 'Item retrieved successfully!',
+  item: {
+      _id: 'xxxxxxxxxx',
+      name: 'Baggie Shaggie',
+      price: 15,
+      color: 'tomato',
+      categories: [
+          't-shirt',
+          'unisex'
+      ],
+      material: 'Cotton',
+      origin: 'USA',
+      description: 'Lorem Ipsum Description'
+  }
 }
+
 ```
 #### Create item
 ##### Route
