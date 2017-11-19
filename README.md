@@ -170,7 +170,8 @@ Response
         ],
         material: 'Jean',
         origin: 'USA',
-        description: 'Lorem Ipsum Description'
+        description: ['paragraph', 'paragraph'],
+        image: 'data:image/png;base64,iVBORw0KGgo...'
     },
     {
         _id: 'xxxxxxxxxx',
@@ -183,7 +184,8 @@ Response
         ],
         material: 'Cotton',
         origin: 'USA',
-        description: 'Lorem Ipsum Description'
+        description: ['paragraph', 'paragraph'],
+        image: 'data:image/png;base64,iVBORw0KGgo...'
     },
 ]
 ```
@@ -209,7 +211,8 @@ Response
       ],
       material: 'Cotton',
       origin: 'USA',
-      description: 'Lorem Ipsum Description'
+      description: ['paragraph', 'paragraph'],
+      image: 'data:image/png;base64,iVBORw0KGgo...'
   }
 }
 
@@ -226,10 +229,11 @@ Request
   name:        'Fancy Mikael',
   price:        404,
   color:       'transparent',
-  description: 'Very fancy pants',      //Optional: defaults to Lerom Ipsum text
-  material:    'silk',                  //Optional: defaults to Cotton
-  origin:      'USA'                    //Optional: defaults to USA
+  description: ['paragraph', 'paragraph']   //Optional: defaults to Lerom Ipsum text
+  material:    'silk',                      //Optional: defaults to Cotton
+  origin:      'USA'                        //Optional: defaults to USA
   categories:  ['man', 'pants'],
+  image: 'data:image/png;base64,iVBORw0KGgo...',
   token:       xxxxxx.xxxxxx.xxxxx
 }
 ```
