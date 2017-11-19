@@ -4,6 +4,7 @@ module.exports = {
 
   //Databse setup
   db_location: 'mongodb://localhost:27017/morello',
+  payload_limit: '2000kb',
 
   //Password hashing
   hash_rounds: 10,
