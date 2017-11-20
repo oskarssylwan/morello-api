@@ -6,7 +6,7 @@ const Item = require('../models/item');
 
 
 
-module.exports = {
+const methods = {
 
 
   // Param Id Methods
@@ -23,8 +23,7 @@ module.exports = {
 
 
   // Route Methods
-
-  getItems: function(req, res, next) {
+  getItemsByCategory: function(req, res, next) {
     if (!req.query.categories) return next(new Error('No category specified'));
     Item.find({ categories: { $all: req.query.categories.split(',')}}, (error, items) => {
         if (error) return next(error);
@@ -32,6 +31,31 @@ module.exports = {
         res.json(items);
       }
      );
+  },
+
+  getItemsByIDs: function(req, res, next) {
+    if (!req.query.itemIDs) return next(new Error('No category specified'));
+    Item.find({ _id: { $in: req.query.itemIDs.split(',')}}, (error, items) => {
+        if (error) return next(error);
+        if (items.length <= 0) return next(new Error('No items found'));
+        res.json(items);
+      }
+     );
+  },
+
+  getItems: function(req, res, next) {
+    if(req.query.itemIDs) {
+      methods.getItemsByIDs(req, res, next);
+    } else if (req.query.categories) {
+      methods.getItemsByCategory(req, res, next);
+    } else {
+      Item.find({}, (error, items) => {
+          if (error) return next(error);
+          if (items.length <= 0) return next(new Error('No items found'));
+          res.json(items);
+        }
+      );
+    }
   },
 
   getItem: function(req, res, next) {
@@ -93,3 +117,5 @@ module.exports = {
   }
 
 };
+
+module.exports = methods;

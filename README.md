@@ -145,11 +145,14 @@ Response
 ```
 ### Items
 
-#### Get items based on category
-Returns an array with items that matches ALL the specified categories. Categories are sent via a query string.
+#### Get multiple items
+
+Get items by either categories or item IDs as query strings. Returns an array with the matched items. If no query parameters are present all items in the database will be returned.
+
 ##### Route
 ```
 GET /items?categories=value1,value2,value3
+GET /items?itemIDs=value1,value2,value3
 ```
 ##### Example
 Request
