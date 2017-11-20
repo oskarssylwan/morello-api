@@ -1,6 +1,6 @@
 module.exports = {
   // Server setup
-  port: 8080,
+  port: process.env.PORT || 8080,
 
   //Databse setup
   db_location: process.env.MONGODB_URI,
