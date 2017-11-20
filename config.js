@@ -3,7 +3,7 @@ module.exports = {
   port: 8080,
 
   //Databse setup
-  db_location: 'mongodb://localhost:27017/morello',
+  db_location: proccess.env.MONGODB_URI,
   payload_limit: '2000kb',
 
   //Password hashing
