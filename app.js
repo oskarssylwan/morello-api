@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config()
 const express = require('express');
 const config = require('./config.js');
 const bodyParser = require('body-parser');
@@ -7,6 +8,7 @@ const webToken = require('jsonwebtoken');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
+
 
 // Middleware
 app.use(bodyParser.json({limit: config.payload_limit}));
