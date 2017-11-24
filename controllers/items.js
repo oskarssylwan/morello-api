@@ -2,6 +2,15 @@
 
 // Model
 const Item = require('../models/item');
+const cloudinary = require('cloudinary');
+const config = require('../config');
+
+//Config
+cloudinary.config({
+  cloud_name: config.cloudinary_name,
+  api_key: config.cloudinary_key,
+  api_secret: config.cloudinary_secret
+});
 
 
 
@@ -68,15 +77,19 @@ const methods = {
 
   createItem: function(req, res, next) {
     if (req.token_decoded.user_group === 'admin') {
-      const item = new Item(req.body);
-      item.save((error, itemEntry) => {
-        if (error) next(error);
-        res.json({
-          success: true,
-          message: 'Item created successfully!',
-          item: item
-        });
-      })
+
+      cloudinary.uploader.upload(req.body.image, result => {
+        const item = new Item(req.body);
+        item.image = result.url;
+        item.save((error, itemEntry) => {
+          if (error) next(error);
+          res.json({
+            success: true,
+            message: 'Item created successfully!',
+            item: item
+          });
+        })
+      });
     } else {
       const err = new Error('Access denied');
       return next(err);

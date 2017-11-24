@@ -11,5 +11,11 @@ module.exports = {
 
   //Tokens
   token_secret: process.env.TOKEN_SECRET || 'morello',
-  token_expire_time: process.env.TOKEN_EXPIRE_TIME || '1 day'
+  token_expire_time: process.env.TOKEN_EXPIRE_TIME || '1 day',
+
+  //Cloudinary Config
+  cloudinary_name: process.env.CLOUDINARY_NAME,
+  cloudinary_key: process.env.CLOUDINARY_KEY,
+  cloudinary_secret: process.env.CLOUDINARY_SECRET
+
 }

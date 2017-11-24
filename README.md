@@ -174,7 +174,7 @@ Response
         material: 'Jean',
         origin: 'USA',
         description: ['paragraph', 'paragraph'],
-        image: 'data:image/png;base64,iVBORw0KGgo...'
+        image_url: 'image_url'
     },
     {
         _id: 'xxxxxxxxxx',
@@ -188,7 +188,7 @@ Response
         material: 'Cotton',
         origin: 'USA',
         description: ['paragraph', 'paragraph'],
-        image: 'data:image/png;base64,iVBORw0KGgo...'
+        image_url: 'image_url'
     },
 ]
 ```
@@ -215,7 +215,7 @@ Response
       material: 'Cotton',
       origin: 'USA',
       description: ['paragraph', 'paragraph'],
-      image: 'data:image/png;base64,iVBORw0KGgo...'
+      image_url: 'image_url' 
   }
 }
 
