@@ -34,7 +34,7 @@ const methods = {
   // Route Methods
   getItemsByCategory: function(req, res, next) {
     if (!req.query.categories) return next(new Error('No category specified'));
-    Item.find({ categories: { $all: req.query.categories.split(',')}}, (error, items) => {
+    Item.find({ categories: { $in: req.query.categories.split(',')}}, (error, items) => {
         if (error) return next(error);
         if (items.length <= 0) return next(new Error('No items found'));
         res.json(items);
