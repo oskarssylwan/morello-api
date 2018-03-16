@@ -1,7 +1,7 @@
 'use strict'
 
 // Model
-const Order = require('../models/order');
+const Order = require('../../models/order');
 
 
 // Exports

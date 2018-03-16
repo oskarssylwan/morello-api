@@ -1,7 +1,14 @@
 const router = require('express').Router();
 
 router.get('/', (req, res, next) => {
-  res.json({ works: true});
+  res.json({
+    success: true,
+    message: 'Welcome to the morello API, for documentation see https://github.com/oskarssylwan/morello-api'
+  });
 });
 
- module.exports = router;
+router.use('/items', require('./items'));
+router.use('/user', require('./users'));
+router.use('/store', require('./store'));
+
+module.exports = router;

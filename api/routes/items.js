@@ -1,8 +1,6 @@
-'use strict';
-
 // Imports
 const express = require('express');
-const middleware = require('../middleware');
+const middleware = require('../../middleware');
 const controller = require('../controllers/items');
 const router = express.Router();
 

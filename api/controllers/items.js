@@ -1,9 +1,9 @@
 'use strict'
 
 // Model
-const Item = require('../models/item');
+const Item = require('../../models/item');
 const cloudinary = require('cloudinary');
-const config = require('../config');
+const config = require('../../config');
 
 //Config
 cloudinary.config({

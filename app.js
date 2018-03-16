@@ -27,10 +27,6 @@ db.on('error', (err) => {
 mongoose.Promise = global.Promise;
 
 // Routes
-app.use('/items', require('./routes/items'));
-app.use('/user', require('./routes/users'));
-app.use('/store', require('./routes/store'));
-
 app.use('/api', require('./api').router);
 
 

@@ -2,10 +2,10 @@
 
 // Imports
 const webToken = require('jsonwebtoken');
-const config = require('../config');
+const config = require('../../config');
 
 // Model
-const User = require('../models/user');
+const User = require('../../models/user');
 
 
 // Exports
