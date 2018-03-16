@@ -1,13 +1,12 @@
 'use strict';
 
 require('dotenv').config()
-const express = require('express');
 const config = require('./config.js');
 const bodyParser = require('body-parser');
 const webToken = require('jsonwebtoken');
 const morgan = require('morgan');
 const cors = require('cors');
-const app = express();
+const app = require('express')();
 
 
 // Middleware
@@ -28,13 +27,11 @@ db.on('error', (err) => {
 mongoose.Promise = global.Promise;
 
 // Routes
-const itemRoutes = require('./routes/items');
-const userRoutes = require('./routes/users');
-const storeRoutes = require('./routes/store');
-app.use('/items', itemRoutes);
-app.use('/user', userRoutes);
-app.use('/store', storeRoutes);
+app.use('/items', require('./routes/items'));
+app.use('/user', require('./routes/users'));
+app.use('/store', require('./routes/store'));
 
+app.use('/api', require('./api').router);
 
 
 // catch 404 and forward to error handler
