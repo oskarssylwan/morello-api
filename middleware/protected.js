@@ -6,7 +6,7 @@ function protected(req, res, next) {
   if (token) {
     webToken.verify(token, 'morello', (error, decoded) => {
       if (error)  {
-         return next(error);
+        return next(error);
       } else {
         req.token_decoded = decoded;
         next();
@@ -19,4 +19,4 @@ function protected(req, res, next) {
   }
 };
 
-module.exports.protected = protected;
+module.exports = protected;
