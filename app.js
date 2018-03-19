@@ -1,9 +1,6 @@
-'use strict';
-
-require('dotenv').config()
+require('dotenv').config();
 const config = require('./config.js');
 const bodyParser = require('body-parser');
-const webToken = require('jsonwebtoken');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = require('express')();
@@ -38,6 +35,7 @@ app.use((req, res, next) => {
 });
 
 // Error handler
+// eslint-disable-next-line
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
@@ -49,4 +47,4 @@ app.use((error, req, res, next) => {
 // Port Setup
 app.listen(config.port, () => {
   console.log('Server running on port', config.port);
-})
+});

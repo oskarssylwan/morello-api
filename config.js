@@ -18,4 +18,4 @@ module.exports = {
   cloudinary_key: process.env.CLOUDINARY_KEY,
   cloudinary_secret: process.env.CLOUDINARY_SECRET
 
-}
+};

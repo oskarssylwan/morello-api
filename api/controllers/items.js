@@ -1,9 +1,7 @@
-'use strict'
-
-// Model
 const Item = require('../../models/item');
 const cloudinary = require('cloudinary');
 const config = require('../../config');
+const { response } = require('../../utility');
 
 //Config
 cloudinary.config({
@@ -12,68 +10,62 @@ cloudinary.config({
   api_secret: config.cloudinary_secret
 });
 
-
-
-
 const methods = {
 
-
   // Param Id Methods
-
-  findItem: function(req, res, next, id) {
-    Item.findById(id, (error, item) => {
-      if (error) return next(error);
-      if (!item) return next(new Error('Item could not be found'));
-      req.item = item;
+  findItem: async (req, res, next, id) => {
+    try {
+      req.item = await Item.findById(id);
       return next();
-    });
-  },
-
-
-
-  // Route Methods
-  getItemsByCategory: function(req, res, next) {
-    if (!req.query.categories) return next(new Error('No category specified'));
-    Item.find({ categories: { $in: req.query.categories.split(',')}}, (error, items) => {
-        if (error) return next(error);
-        if (items.length <= 0) return next(new Error('No items found'));
-        res.json(items);
-      }
-     );
-  },
-
-  getItemsByIDs: function(req, res, next) {
-    if (!req.query.itemIDs) return next(new Error('No category specified'));
-    Item.find({ _id: { $in: req.query.itemIDs.split(',')}}, (error, items) => {
-        if (error) return next(error);
-        if (items.length <= 0) return next(new Error('No items found'));
-        res.json(items);
-      }
-     );
-  },
-
-  getItems: function(req, res, next) {
-    if(req.query.itemIDs) {
-      methods.getItemsByIDs(req, res, next);
-    } else if (req.query.categories) {
-      methods.getItemsByCategory(req, res, next);
-    } else {
-      Item.find({}, (error, items) => {
-          if (error) return next(error);
-          if (items.length <= 0) return next(new Error('No items found'));
-          res.json(items);
-        }
-      );
+    } catch (error) {
+      return next(new Error('Item could not be found'));
     }
   },
 
-  getItem: function(req, res, next) {
-    res.json({
-      success: true,
-      message: 'Item retrieved successfully!',
-      item: req.item
-    })
+  // Route Methods
+  getItemsByCategory: async (categories = []) => {
+    try {
+      const items = await Item.find({ categories: { $in: categories.split(',')}});
+      if (items.length <= 0 ) throw new Error('No items found');
+      return items;
+    } catch (error) {
+      throw error;
+    }
   },
+
+  getItemsByIds: async (ids) => {
+    try {
+      const items = await Item.find({ _id: { $in: ids.split(',')}});
+      if (items.length <= 0 ) throw new Error('No items found');
+      return items;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getItems: async (req, res, next) => {
+    const { categories, itemIds } = req.query;
+    let items;
+
+    try {
+      if(itemIds) {
+        items = await methods.getItemsByIds(itemIds);
+      } else if (categories) {
+        items = await methods.getItemsByCategory(categories);
+      } else {
+        items = await Item.find({});
+        if (items.length <= 0) throw new Error('No items found');
+      }
+      res.json(response('Item\'s retrieved successfully', { items }));
+
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  // eslint-disable-next-line
+  getItem: (req, res, next) =>
+    res.json(response('Item retrieved successfully!', { item: req.item })),
 
   createItem: function(req, res, next) {
     if (req.token_decoded.user_group === 'admin') {

@@ -1,8 +1,7 @@
 {
     "env": {
         "es6": true,
-        "node": true,
-        "express": true
+        "node": true
     },
     "parserOptions": {
       "ecmaVersion": 2017,

@@ -2,12 +2,8 @@
 const webToken = require('jsonwebtoken');
 const config = require('../../config');
 const { response } = require('../../utility');
-
-// Model
 const User = require('../../models/user');
 
-
-// Exports
 module.exports = {
 
   // Param Id Methods
@@ -68,7 +64,6 @@ module.exports = {
       const result = await User.authenticate(id, password);
       const { error, user } = result;
       if(error) throw error;
-      
       const payload = {
         username: user.username,
         user_id: user._id,
