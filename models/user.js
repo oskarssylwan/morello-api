@@ -59,7 +59,6 @@ UserSchema.pre('save', async function(next) {
   try {
     const hashedPassword = await bcrypt.hash(user.password, hash_rounds);
     user.password = hashedPassword;
-    user.cart.push(hashedPassword);
     return next();
   } catch (error) {
     return next(error);
@@ -67,4 +66,5 @@ UserSchema.pre('save', async function(next) {
 
 });
 
-module.exports = mongoose.model('User', UserSchema);;
+const User = mongoose.model('User', UserSchema);
+module.exports = User;
