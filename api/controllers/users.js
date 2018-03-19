@@ -1,5 +1,3 @@
-'use strict'
-
 // Imports
 const webToken = require('jsonwebtoken');
 const config = require('../../config');
@@ -13,72 +11,74 @@ module.exports = {
 
   // Param Id Methods
 
-  findUser: function(req, res, next, username) {
-    User.findOne({username: username},  {password: 0, __v: 0}, (error, user) => {
-      if (error) return next(error);
-      if (!user) return next(new Error('User could not be found'));
+  findUser: async (req, res, next, username) => {
+    try {
+      const user = await User.findOne({ username },  {password: 0, __v: 0});
+      if (!user) throw new Error('User could not be found')
       req.user = user;
       return next();
-    });
+    } catch (error) {
+      return next(error);
+    }
   },
 
 
   // Router Methods
+  getUser: (req, res, next) => res.json({
+    success: true,
+    message: 'User retrieved successfully!',
+    user: req.user
+  }),
 
-  getUser: function(req, res, next) {
-    res.json({
-      success: true,
-      message: 'User retrieved successfully!',
-      user: req.user
-    });
-  },
-
-
-  createUser: function(req, res, next) {
+  createUser: async (req, res, next) => {
     req.body.user_group = 'user';
     const user = new User(req.body);
-    user.save((error, savedUser) => {
-      if (error) return next(error);
+
+    try {
+      await user.save();
       res.json({
         success: true,
         message: 'User created successfully!',
         user: {
-          email: savedUser.email,
-          username: savedUser.username,
-          user_group: savedUser.user_group
+          email: user.email,
+          username: user.username,
+          user_group: user.user_group
         }
       });
-    });
+    } catch (error) {
+      return next(error);
+    }
   },
 
+  updateUser: async (req, res, next) => {
+    const { user } = req;
 
-  updateUser: function(req, res, next) {
-    if (req.token_decoded.username === req.user.username) {
-      req.user.set(req.body);
-      req.user.save((error, user) => {
-        if (error) return next(error);
+    try {
+      if (req.token_decoded.username !== user.username) throw new Error('Access denied');
 
-        res.json({
-          success: true,
-          message: 'User updated successfully!',
-          user: {
-            email: user.email,
-            username: user.username,
-            user_group: user.user_group,
-            cart: user.cart
-          }
-        });
+      user.set(req.body);
+      const updatedUser = await user.save();
+
+      res.json({
+        success: true,
+        message: 'User updated successfully!',
+        user: {
+          email: updatedUser.email,
+          username: updatedUser.username,
+          user_group: updatedUser.user_group,
+          cart: updatedUser.cart
+        }
+
       });
-    } else {
-      const err = new Error('Access denied');
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   },
 
 
   authenticateUser: function(req, res, next) {
+    console.log(req.user);
     const userID = req.body.email || req.body.username;
-    console.log(req.body);
     User.authenticate(userID, req.body.password, (error, user) => {
       if(error) {
         return next(error);
@@ -100,5 +100,10 @@ module.exports = {
         });
       }
     })
-  }
+  },
+
+  // authenticateUser: async (req, res, next) => {
+  //   const userID = req.body.email || req.body.username;
+  //
+  // }
 };

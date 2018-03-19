@@ -1,5 +1,3 @@
-'use strict';
-
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const config = require('../config.js');
@@ -62,6 +60,19 @@ UserSchema.statics.authenticate = function(id, password, callback) {
         }
       });
 };
+
+//Static Methods
+// UserSchema.statics.authenticate = async (id, password) => {
+//   try {
+//     const user = await User.findOne({ $or: [{username: id}, {email: id}]})
+//     if (!user) throw new Error('User not found');
+//     const passwordMatch = await bcrypt.compare(password, user.password);
+//     if (passwordMatch) return passwordMatch;
+//     throw new Error('Credentisal do not match');
+//   } catch (error) {
+//     return [error];
+//   }
+// };
 
 //Hooks
 UserSchema.pre('save', function(next) {
