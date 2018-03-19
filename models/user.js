@@ -36,65 +36,35 @@ const UserSchema = new mongoose.Schema({
 });
 
 //Static Methods
-UserSchema.statics.authenticate = function(id, password, callback) {
-  User.findOne({ $or: [{username: id}, {email: id}]})
-      .exec(function (error, user) {
-        if(error) {
-          return callback(error);
-        } else if (!user) {
-          const err = new Error('User not found');
-          err.status = 401;
-          return callback(err);
-        } else {
-          bcrypt.compare(password, user.password, function(error, result) {
-            if (result === true) {
-              return callback(null, user);
-            } else if (!result){
-              const err = new Error('Credentials do not match');
-              return callback(err);
-            } else {
-              console.log(result);
-              return callback(error);
-            }
-          });
-        }
-      });
+UserSchema.statics.authenticate = async (id, password) => {
+  try {
+    // eslint-disable-next-line
+    const user = await User.findOne({ $or: [{username: id}, {email: id}]});
+    if (!user) throw new Error('User not found');
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (passwordMatch) return { user };
+    throw new Error('Credentials do not match');
+  } catch (error) {
+    return {error};
+  }
 };
 
-//Static Methods
-// UserSchema.statics.authenticate = async (id, password) => {
-//   try {
-//     const user = await User.findOne({ $or: [{username: id}, {email: id}]})
-//     if (!user) throw new Error('User not found');
-//     const passwordMatch = await bcrypt.compare(password, user.password);
-//     if (passwordMatch) return passwordMatch;
-//     throw new Error('Credentisal do not match');
-//   } catch (error) {
-//     return [error];
-//   }
-// };
-
-//Hooks
-UserSchema.pre('save', function(next) {
+// Cannot use arrow functions in this context
+UserSchema.pre('save', async function(next) {
   let user = this;
-  if(user.password) {
-    bcrypt.hash(user.password, config.hash_rounds, function(error, hashed) {
-      if (error) {
-        return next(error);
-      } else {
-        user.password = hashed;
-          next();
-      }
-    });
-  } else {
-    next();
+  const { hash_rounds } = config;
+
+  if (!user.password) return next();
+
+  try {
+    const hashedPassword = await bcrypt.hash(user.password, hash_rounds);
+    user.password = hashedPassword;
+    user.cart.push(hashedPassword);
+    return next();
+  } catch (error) {
+    return next(error);
   }
+
 });
 
-
-
-// Models
-const User = mongoose.model('User', UserSchema);
-
-// Exports
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);;
