@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
   },
   user_group: {
     type:     String,
-    required: true
+    default: 'user'
   },
   cart: {
     type: [{}],

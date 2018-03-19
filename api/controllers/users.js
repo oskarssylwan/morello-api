@@ -1,8 +1,12 @@
-// Imports
 const webToken = require('jsonwebtoken');
 const config = require('../../config');
 const { response } = require('../../utility');
 const User = require('../../models/user');
+const { makeCreateUser, makeUpdateUser } = require('../../mongodb/utils');
+
+const createUser = makeCreateUser(User);
+const updateUser = makeUpdateUser(User);
+const getUser = makeUpdateUser(User);
 
 module.exports = {
 
@@ -18,42 +22,35 @@ module.exports = {
     }
   },
 
+  // findUser: async (req, res, next, username) => {
+  //   try {
+  //     req.user = await getUser(username);
+  //   } catch (error) {
+  //     return next(error);
+  //   }
+  //   return getUser(username)
+  //   .then(user => req.user)
+  //   .then(next())
+  //   .catch(next)
+  // },
+
   //eslint-disable-next-line
   getUser: (req, res, next) =>
     res.json(response('User retrieved successfully', {user: req.user})),
 
-  createUser: async (req, res, next) => {
-    req.body.user_group = 'user';
-    const user = new User(req.body);
 
-    try {
-      await user.save();
-      const { email, username, user_group } = user;
-
-      res.json(response('User created successfully',
-        {user: { email, username, user_group } }));
-
-    } catch (error) {
-      return next(error);
-    }
+  createUser: (req, res, next) => {
+    const { email, username, password } = req.body;
+    createUser(username, email, password)
+    .then( user => res.json(response('User created successfully', {user: { email, username} })))
+    .catch(next);
   },
 
-  updateUser: async (req, res, next) => {
-    const { user } = req;
 
-    try {
-      if (req.token_decoded.username !== user.username) throw new Error('Access denied');
-
-      user.set(req.body);
-      const updatedUser = await user.save();
-      const { email, username, user_group, cart } = updatedUser;
-
-      res.json(response('User updated successfully!',
-        {user: {email, username, user_group, cart } }));
-
-    } catch (error) {
-      return next(error);
-    }
+  updateUser: (req, res, next) => {
+    updateUser(req.token.email, req.body.update)
+    .then( user => res.json(response('User updated successfully', {user})))
+    .catch(next);
   },
 
   authenticateUser: async (req, res, next) => {
@@ -65,8 +62,7 @@ module.exports = {
       const { error, user } = result;
       if(error) throw error;
       const payload = {
-        username: user.username,
-        user_id: user._id,
+        email: user.email,
         user_group: user.user_group
       };
 

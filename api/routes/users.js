@@ -13,7 +13,7 @@ router.param('username', controller.findUser);
 router.get('/:username', controller.getUser);
 router.post('/', controller.createUser);
 router.post('/authenticate', controller.authenticateUser);
-router.put('/:username', middleware.protected, controller.updateUser);
+router.put('/', middleware.protected, controller.updateUser);
 
 // Exports
 module.exports = router;

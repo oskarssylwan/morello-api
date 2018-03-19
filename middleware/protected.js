@@ -8,7 +8,7 @@ function protected(req, res, next) {
       if (error)  {
         return next(error);
       } else {
-        req.token_decoded = decoded;
+        req.token = decoded;
         next();
       }
     });
