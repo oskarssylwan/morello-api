@@ -1,6 +1,7 @@
 // Imports
 const webToken = require('jsonwebtoken');
 const config = require('../../config');
+const { response } = require('../../utility');
 
 // Model
 const User = require('../../models/user');
@@ -10,11 +11,10 @@ const User = require('../../models/user');
 module.exports = {
 
   // Param Id Methods
-
   findUser: async (req, res, next, username) => {
     try {
       const user = await User.findOne({ username },  {password: 0, __v: 0});
-      if (!user) throw new Error('User could not be found')
+      if (!user) throw new Error('User could not be found');
       req.user = user;
       return next();
     } catch (error) {
@@ -22,13 +22,9 @@ module.exports = {
     }
   },
 
-
-  // Router Methods
-  getUser: (req, res, next) => res.json({
-    success: true,
-    message: 'User retrieved successfully!',
-    user: req.user
-  }),
+  //eslint-disable-next-line
+  getUser: (req, res, next) =>
+    res.json(response('User retrieved successfully', {user: req.user})),
 
   createUser: async (req, res, next) => {
     req.body.user_group = 'user';
@@ -36,15 +32,11 @@ module.exports = {
 
     try {
       await user.save();
-      res.json({
-        success: true,
-        message: 'User created successfully!',
-        user: {
-          email: user.email,
-          username: user.username,
-          user_group: user.user_group
-        }
-      });
+      const { email, username, user_group } = user;
+
+      res.json(response('User created successfully',
+        {user: { email, username, user_group } }));
+
     } catch (error) {
       return next(error);
     }
@@ -58,52 +50,38 @@ module.exports = {
 
       user.set(req.body);
       const updatedUser = await user.save();
+      const { email, username, user_group, cart } = updatedUser;
 
-      res.json({
-        success: true,
-        message: 'User updated successfully!',
-        user: {
-          email: updatedUser.email,
-          username: updatedUser.username,
-          user_group: updatedUser.user_group,
-          cart: updatedUser.cart
-        }
+      res.json(response('User updated successfully!',
+        {user: {email, username, user_group, cart } }));
 
-      });
     } catch (error) {
       return next(error);
     }
   },
 
+  authenticateUser: async (req, res, next) => {
+    const id = req.body.email || req.body.username;
+    const password = req.body.password;
 
-  authenticateUser: function(req, res, next) {
-    console.log(req.user);
-    const userID = req.body.email || req.body.username;
-    User.authenticate(userID, req.body.password, (error, user) => {
-      if(error) {
-        return next(error);
-      } else {
-        const payload = {
-          username: user.username,
-          user_id: user._id,
-          user_group: user.user_group
-        };
+    try {
+      const result = await User.authenticate(id, password);
+      const { error, user } = result;
+      if(error) throw error;
+      
+      const payload = {
+        username: user.username,
+        user_id: user._id,
+        user_group: user.user_group
+      };
 
-        const token = webToken.sign(payload, config.token_secret, {
-          expiresIn: config.token_expire_time
-        });
+      const { token_secret, token_expire_time } = config;
+      const token = webToken.sign(payload, token_secret, { expiresIn: token_expire_time });
+      res.json(response('Authentication successfull!', { token }));
 
-        res.json({
-          success: true,
-          message: "Authentication successfull!",
-          token: token
-        });
-      }
-    })
-  },
+    } catch (error) {
+      next(error);
+    }
 
-  // authenticateUser: async (req, res, next) => {
-  //   const userID = req.body.email || req.body.username;
-  //
-  // }
+  }
 };
