@@ -1,7 +1,7 @@
 const webToken = require('jsonwebtoken');
 const config = require('../../config');
 const { response } = require('../../utility');
-const User = require('../../models/user');
+const User = require('../../mongodb/models/user');
 const { makeCreateUser, makeUpdateUser, makeGetUser, makeAuthenticateUser } = require('../../mongodb/utils');
 const { makeCreateToken } = require('../../utility');
 

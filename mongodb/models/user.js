@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const config = require('../config.js');
+const config = require('../../config.js');
 
 // Schemas
 const UserSchema = new mongoose.Schema({

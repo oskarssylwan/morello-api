@@ -1,4 +1,4 @@
-const Item = require('../../models/item');
+const Item = require('../../mongodb/models/item');
 const cloudinary = require('cloudinary');
 const config = require('../../config');
 const { response } = require('../../utility');
