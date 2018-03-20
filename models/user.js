@@ -45,7 +45,7 @@ UserSchema.statics.authenticate = async (id, password) => {
     if (passwordMatch) return { user };
     throw new Error('Credentials do not match');
   } catch (error) {
-    return {error};
+    return Promise.reject(error);
   }
 };
 

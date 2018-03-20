@@ -12,5 +12,10 @@ module.exports.makeUpdateUser = Model => (email, newData) =>
 
 module.exports.makeGetUser = Model => id =>
   Model.findOne({ $or: [{username: id}, {email: id}]}, '-password')
-  .then(user => user ? user : Promise.reject(new Error('User could not be found')))
+  .then(user => user ? user : Promise.reject(new Error('User could not be langlang')))
+  .catch(error => Promise.reject(error));
+
+
+module.exports.makeAuthenticateUser = Model => (email, password) =>
+  Model.authenticate(email, password)
   .catch(error => Promise.reject(error));

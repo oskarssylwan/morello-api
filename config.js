@@ -10,8 +10,8 @@ module.exports = {
   hash_rounds: process.env.HASH_ROUNDS || 10,
 
   //Tokens
-  token_secret: process.env.TOKEN_SECRET || 'morello',
-  token_expire_time: process.env.TOKEN_EXPIRE_TIME || '1 day',
+  tokenSecret: process.env.TOKEN_SECRET || 'morello',
+  tokenExpireTime: process.env.TOKEN_EXPIRE_TIME || '1 day',
 
   //Cloudinary Config
   cloudinary_name: process.env.CLOUDINARY_NAME,

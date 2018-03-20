@@ -2,37 +2,26 @@ const webToken = require('jsonwebtoken');
 const config = require('../../config');
 const { response } = require('../../utility');
 const User = require('../../models/user');
-const { makeCreateUser, makeUpdateUser } = require('../../mongodb/utils');
+const { makeCreateUser, makeUpdateUser, makeGetUser, makeAuthenticateUser } = require('../../mongodb/utils');
+const { makeCreateToken } = require('../../utility');
 
 const createUser = makeCreateUser(User);
 const updateUser = makeUpdateUser(User);
-const getUser = makeUpdateUser(User);
+const getUser = makeGetUser(User);
+const authenticateUser = makeAuthenticateUser(User);
+
+const createToken = makeCreateToken(webToken)
+  ({secret: config.tokenSecret, expireTime: '1 day'});
+
 
 module.exports = {
 
   // Param Id Methods
-  findUser: async (req, res, next, username) => {
-    try {
-      const user = await User.findOne({ username },  {password: 0, __v: 0});
-      if (!user) throw new Error('User could not be found');
-      req.user = user;
-      return next();
-    } catch (error) {
-      return next(error);
-    }
+  findUser: (req, res, next, username) => {
+    getUser(username)
+    .then(user => { req.user = user; next();})
+    .catch(next)
   },
-
-  // findUser: async (req, res, next, username) => {
-  //   try {
-  //     req.user = await getUser(username);
-  //   } catch (error) {
-  //     return next(error);
-  //   }
-  //   return getUser(username)
-  //   .then(user => req.user)
-  //   .then(next())
-  //   .catch(next)
-  // },
 
   //eslint-disable-next-line
   getUser: (req, res, next) =>
@@ -53,26 +42,14 @@ module.exports = {
     .catch(next);
   },
 
-  authenticateUser: async (req, res, next) => {
-    const id = req.body.email || req.body.username;
-    const password = req.body.password;
-
-    try {
-      const result = await User.authenticate(id, password);
-      const { error, user } = result;
-      if(error) throw error;
-      const payload = {
-        email: user.email,
-        user_group: user.user_group
-      };
-
-      const { token_secret, token_expire_time } = config;
-      const token = webToken.sign(payload, token_secret, { expiresIn: token_expire_time });
-      res.json(response('Authentication successfull!', { token }));
-
-    } catch (error) {
-      next(error);
-    }
-
+  authenticateUser: (req, res, next) => {
+    const { password, email } = req.body;
+    authenticateUser(email, password)
+    .then( user => res.json(response('Authentication successfull!',
+      { token: createToken({
+          email: user.email,
+          user_group: user.user_group
+      })})))
+    .catch(next);
   }
 };
