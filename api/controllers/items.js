@@ -2,6 +2,10 @@ const Item = require('../../mongodb/models/item');
 const cloudinary = require('cloudinary');
 const config = require('../../config');
 const { response } = require('../../utility');
+const { makeGetItem } = require('../../mongodb/utils');
+
+
+const getItem = makeGetItem(Item);
 
 //Config
 cloudinary.config({
@@ -13,13 +17,10 @@ cloudinary.config({
 const methods = {
 
   // Param Id Methods
-  findItem: async (req, res, next, id) => {
-    try {
-      req.item = await Item.findById(id);
-      return next();
-    } catch (error) {
-      return next(new Error('Item could not be found'));
-    }
+  findItem: (req, res, next, id) => {
+    getItem(id)
+    .then(item => { req.item = item; next(); })
+    .catch(next);
   },
 
   // Route Methods

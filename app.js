@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = require('express')();
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 
 
 // Middleware
@@ -25,6 +26,9 @@ mongoose.Promise = global.Promise;
 
 // Routes
 app.use('/api', require('./api').router);
+const {schema} = require('./graphql')
+app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql'}));
+app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
 
 
 // catch 404 and forward to error handler
